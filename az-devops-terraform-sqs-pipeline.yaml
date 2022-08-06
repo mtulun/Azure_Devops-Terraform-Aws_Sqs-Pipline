@@ -1,0 +1,50 @@
+steps:
+- task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+  displayName: 'Install Terraform v1.2.6'
+  inputs:
+    terraformVersion: 1.2.6
+- task: amazonwebservices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
+  displayName: 'Terraform Init'
+  inputs:
+    awsCredentials: '<The AWS account you specified as the Service Connection>' 
+    regionName: 'eu-west-1'
+    scriptType: inline
+    inlineScript: |
+     cd $(System.DefaultWorkingDirectory)/_aws-sqs-template
+     
+     terraform init 
+     
+    disableAutoCwd: true
+    workingDirectory: '$(System.DefaultWorkingDirectory)/_aws-sqs-template'
+#Your build pipeline references the ‘name’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build pipeline references the ‘delay_seconds’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build pipeline references the ‘visibility_timeout_seconds’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build pipeline references the ‘max_message_size’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build pipeline references the ‘message_retention_seconds’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build pipeline references the ‘receive_wait_time’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+- task: amazonwebservices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
+  displayName: 'Terraform Plan'
+  inputs:
+    awsCredentials: '<The AWS account you specified as the Service Connection>'
+    regionName: 'eu-west-1'
+    scriptType: inline
+    inlineScript: |
+     cd $(System.DefaultWorkingDirectory)/_aws-sqs-template
+     
+     terraform plan -var="aws_sqs_queue_name=$(name)"  -var="aws_sqs_queue_delay_seconds=$(delay_seconds)" -var="aws_sqs_queue_visibility_timeout_seconds=$(visibility_timeout_seconds)" -var="aws_sqs_queue_max_message_size=$(max_message_size)" -var="aws_sqs_queue_message_retention_seconds=$(message_retention_seconds)" -var="aws_sqs_queue_receive_wait_time=$(receive_wait_time)"
+#Your build pipeline references the ‘name’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build pipeline references the ‘delay_seconds’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build pipeline references the ‘visibility_timeout_seconds’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build pipeline references the ‘max_message_size’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build pipeline references the ‘message_retention_seconds’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build pipeline references the ‘receive_wait_time’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+- task: amazonwebservices.aws-vsts-tools.AWSShellScript.AWSShellScript@1
+  displayName: 'Terraform Apply'
+  inputs:
+    awsCredentials: '<The AWS account you specified as the Service Connection>'
+    regionName: 'eu-west-1'
+    scriptType: inline
+    inlineScript: |
+     cd $(System.DefaultWorkingDirectory)/_aws-sqs-template
+     
+     terraform apply -var="aws_sqs_queue_name=$(name)"  -var="aws_sqs_queue_delay_seconds=$(delay_seconds)" -var="aws_sqs_queue_visibility_timeout_seconds=$(visibility_timeout_seconds)" -var="aws_sqs_queue_max_message_size=$(max_message_size)" -var="aws_sqs_queue_message_retention_seconds=$(message_retention_seconds)" -var="aws_sqs_queue_receive_wait_time=$(receive_wait_time)" --auto-approve
